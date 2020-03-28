@@ -1,11 +1,12 @@
 import numpy as np
+from subFunctions import syori
 
 class linerRegression:
     def __init__(self):
         pass
 
     def learn(self,x,y):
-        matX = np.array(x)
+        matX = syori.standardization(np.array(x))
         theta = np.linalg.inv(np.dot(matX.T,matX))
         theta = np.dot(np.dot(theta,matX.T),np.array(y))
         self.theta = theta
