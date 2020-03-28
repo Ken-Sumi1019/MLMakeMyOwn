@@ -1,6 +1,14 @@
 import numpy as np
 
+"""
 # wolf条件を満たすステップ幅を見つける
+func = 目的関数
+diff = 目的関数の一回微分
+x = 探索を開始する場所
+d = 探索方向ベクトル
+amax = 最大の幅
+c1 = 
+"""
 def wolf(func,diff,x,d,amax,c1,c2,u):
     a = 0
     while a < 100:
@@ -12,3 +20,4 @@ def wolf(func,diff,x,d,amax,c1,c2,u):
             return alpha
         a += 1
     return 0
+
