@@ -13,4 +13,4 @@ def softmax(Z):
 
 """ logがうまいこといくように """
 def llog(x):
-    return np.where(x == 0,-np.inf,np.log(x))
+    return np.where(x <= 0.0,-1e9,np.log(x))

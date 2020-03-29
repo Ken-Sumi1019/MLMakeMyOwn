@@ -5,22 +5,53 @@ class logistic:
     def __init__(self):
         pass
 
-    def learn(self,x,y):
+    def learn(self,x,y,alpha = 1,Epsilon = 0.001):
+        self.alpha = alpha
+        self.Epcilon = Epsilon
         self.paramInit(np.array(x),np.array(y))
-        pass
+        self.train()
+    
+    def predict(self,x):
+        a = self.calc(np.array(x))
+        ans = [0]*len(x)
+        for i in range(len(x)):
+            index = -1;v = -1
+            for j in range(self.feature):
+                if v < a[i][j]:
+                    index = j;v = a[i][j]
+            ans[i] = index
+        return ans
 
-    def train(self,x,y):
-        pass
+
+    def train(self):
+        lossb = 10**9
+        while True:
+            dw,db = self.lossDiff()
+            self.w += self.alpha * dw
+            self.b += self.alpha * db
+            l = self.loss(self.x)
+            ll = np.sqrt(np.dot(l.T,l))
+            if lossb - ll < self.Epcilon:
+                break
+            lossb = ll
 
     def loss(self,x):
-        pass
+        a = self.calc(x)
+        b = self.y*activationFunc.llog(a) + (1 - self.y)*activationFunc.llog(1 - a)
+        return np.sum(b,axis=0)[:,None]
+
+    def lossDiff(self):
+        a = self.y - self.calc(self.x)
+        dw = np.dot(self.x.T,a) / self.sample
+        db = np.dot(np.ones((1,self.sample)),a) / self.sample
+        return dw,db
 
     def paramInit(self,x:np.array,y:np.array):
         self.sample,self.feature = x.shape
         self.y = np.identity(len(np.unique(y)))[y]
         self.x = x
         self.w = np.random.randn(self.feature,len(np.unique(y)))
-        self.b = np.random.randn(self.sample,len(np.unique(y)))
+        self.b = np.random.randn(1,len(np.unique(y)))
 
-    def calc(self):
-        return activationFunc.softmax(np.dot(self.x,self.w) + self.b)
+    def calc(self,x):
+        return activationFunc.softmax(np.dot(x,self.w) + self.b)
