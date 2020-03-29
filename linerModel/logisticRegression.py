@@ -1,4 +1,5 @@
 import numpy as np
+from subFunctions import activationFunc
 
 class logistic:
     def __init__(self):
@@ -19,4 +20,7 @@ class logistic:
         self.y = np.identity(len(np.unique(y)))[y]
         self.x = x
         self.w = np.random.randn(self.feature,len(np.unique(y)))
+        self.b = np.random.randn(self.sample,len(np.unique(y)))
 
+    def calc(self):
+        return activationFunc.softmax(np.dot(self.x,self.w) + self.b)

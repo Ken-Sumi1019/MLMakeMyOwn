@@ -8,7 +8,7 @@ def sigmoid(x):
     return ans
 
 """ ソフトマックス関数 """
-def softmax(self, Z):
+def softmax(Z):
     return np.exp(Z)/np.sum(np.exp(Z), axis=1)[:, None]
 
 """ logがうまいこといくように """
