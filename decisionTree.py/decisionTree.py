@@ -1,5 +1,12 @@
 import numpy as np
 
+class treeNode:
+    def __init__(self):
+        self.right = None
+        self.left = None
+        self.feature = None
+        self.idx = None
+
 class DecisionTree:
     def __init__(self,maxdepth,minsize):
         self.maxdepth = maxdepth
@@ -10,15 +17,39 @@ class DecisionTree:
         self.data = np.array(data)
         self.label = np.array(label)
         self.categorys = np.unique(self.label)
-        self.tree = []
+        self.tree = {}
+        self.makeTree()
 
     """木を構築する"""
     def makeTree(self):
-        pass
+        allIdx = list(range(len(self.data)))
+        self.tree = self.addNode(1,allIdx,self.giniScore(allIdx))
 
     """頂点を追加する"""
-    def addNode(self):
-        pass
+    def addNode(self,depth,indexes,gini):
+        node = self.bestThreshold(indexes)
+        tree = {"gini" : gini,"feature":node["feature"],"val":node["val"]}
+        if self.maxdepth <= depth:
+            tree["right"] = self.leafNode(node["right"],node["rGini"])
+            tree["left"] = self.leafNode(node["left"],node["lGini"])
+            return tree
+        if len(node["right"]) < self.minsize:
+            tree["right"] = self.leafNode(node["right"],node["rGini"])
+        else:
+            tree["right"] = self.addNode(depth + 1,node["right"],node["rGini"])
+        if len(node["left"]) < self.minsize:
+            tree["left"] = self.leafNode(node["left"],node["lGini"])
+        else:
+            tree["left"] = self.addNode(depth + 1,node["left"],node["lGini"])
+        return tree
+
+    """葉ノードを作成"""
+    def leafNode(self,indexes,gini):
+        result = {"gini" : gini}
+        val,count = np.unique(self.label[indexes],return_counts=True)
+        pre = val[np.argmax(count)]
+        result["predictVal"] = pre
+        return result
 
     """ジニ不純度を計算する"""
     def giniScore(self,index):
@@ -38,8 +69,9 @@ class DecisionTree:
                     bestIdx = j;bestFeature = i
                     bestRight = r;bestLeft = l
                     bestScore = lgini + rgini
-        result = {"index" : bestIdx,"feature" : bestFeature,
-                  "right" : bestRight,"left" : bestLeft}
+        result = {"val" : self.data[bestIdx][bestFeature],"feature" : bestFeature,
+                  "right" : bestRight,"left" : bestLeft,
+                  "rGini" : rgini,"lGini" : lgini}
         return result
 
     """指定した閾値に合わせてグループを分ける"""
