@@ -10,7 +10,7 @@ class treeNode:
 class DecisionTree:
     def __init__(self,maxdepth,minsize):
         self.maxdepth = maxdepth
-        self.minsize = minsize
+        self.minsize = max(2,minsize)
 
     """学習する"""
     def learn(self,data,label):
@@ -65,7 +65,8 @@ class DecisionTree:
             for j in indexs:
                 l,r = self.splitGroup(j,i,indexs)
                 if len(l) == 0 or len(r) == 0:continue
-                lgini = self.giniScore(l);rgini = self.giniScore(r)
+                lgini = self.giniScore(l) if len(l) != 0 else 0
+                rgini = self.giniScore(r) if len(r) != 0 else 0
                 if bestScore > lgini + rgini:
                     bestIdx = j;bestFeature = i
                     bestRight = r;bestLeft = l
