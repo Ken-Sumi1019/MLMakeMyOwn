@@ -1,12 +1,5 @@
 import numpy as np
 
-class treeNode:
-    def __init__(self):
-        self.right = None
-        self.left = None
-        self.feature = None
-        self.idx = None
-
 class DecisionTree(object):
     def __init__(self,maxdepth,minsize):
         self.maxdepth = maxdepth
@@ -23,7 +16,7 @@ class DecisionTree(object):
     """木を構築する"""
     def makeTree(self):
         allIdx = list(range(len(self.data)))
-        self.tree = self.addNode(1,allIdx,self.giniScore(allIdx))
+        self.tree = self.addNode(1,allIdx,self.lossScore(allIdx))
 
     """頂点を追加する"""
     def addNode(self,depth,indexes,gini):
@@ -55,7 +48,7 @@ class DecisionTree(object):
         return val[np.argmax(count)]
 
     """ジニ不純度を計算する"""
-    def giniScore(self,index):
+    def lossScore(self,index):
         n = len(index)
         return 1.0 - sum([np.count_nonzero(self.label[index] == c) / n for c in self.categorys])
 
@@ -68,8 +61,8 @@ class DecisionTree(object):
             for j in indexs:
                 l,r = self.splitGroup(j,i,indexs)
                 if len(l) == 0 or len(r) == 0:continue
-                lgini = self.giniScore(l) if len(l) != 0 else 0
-                rgini = self.giniScore(r) if len(r) != 0 else 0
+                lgini = self.lossScore(l) if len(l) != 0 else 0
+                rgini = self.lossScore(r) if len(r) != 0 else 0
                 if bestScore > lgini + rgini:
                     bestIdx = j;bestFeature = i
                     bestRight = r;bestLeft = l
