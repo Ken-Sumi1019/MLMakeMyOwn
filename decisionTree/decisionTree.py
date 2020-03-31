@@ -64,6 +64,7 @@ class DecisionTree:
         for i in range(np.shape(self.data)[1]):
             for j in indexs:
                 l,r = self.splitGroup(j,i,indexs)
+                if len(l) == 0 or len(r) == 0:continue
                 lgini = self.giniScore(l);rgini = self.giniScore(r)
                 if bestScore > lgini + rgini:
                     bestIdx = j;bestFeature = i
@@ -83,3 +84,19 @@ class DecisionTree:
             else:
                 right.append(i)
         return left,right
+
+    """木を移動して予測値を探し出す"""
+    def DFS_predict(self,data,node):
+        if "predictVal" in node:
+            return node["predictVal"]
+        f = node["feature"];v = node["val"]
+        if data[f] < v:
+            return self.DFS_predict(data,node["left"])
+        else:
+            return self.DFS_predict(data,node["right"])
+
+    def predict(self,x):
+        ans = [0]*len(x)
+        for i in range(len(x)):
+            ans[i] = self.DFS_predict(x[i],self.tree)
+        return ans
