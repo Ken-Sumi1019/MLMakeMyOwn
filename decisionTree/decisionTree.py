@@ -7,7 +7,7 @@ class treeNode:
         self.feature = None
         self.idx = None
 
-class DecisionTree:
+class DecisionTree(object):
     def __init__(self,maxdepth,minsize):
         self.maxdepth = maxdepth
         self.minsize = max(2,minsize)
@@ -46,10 +46,13 @@ class DecisionTree:
     """葉ノードを作成"""
     def leafNode(self,indexes,gini):
         result = {"gini" : gini}
-        val,count = np.unique(self.label[indexes],return_counts=True)
-        pre = val[np.argmax(count)]
-        result["predictVal"] = pre
+        result["predictVal"] = self.decisionVal(indexes)
         return result
+
+    """予測値を決定"""
+    def decisionVal(self,indexes):
+        val,count = np.unique(self.label[indexes],return_counts=True)
+        return val[np.argmax(count)]
 
     """ジニ不純度を計算する"""
     def giniScore(self,index):
