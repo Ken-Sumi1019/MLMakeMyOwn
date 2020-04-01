@@ -5,7 +5,7 @@ class linerRegression:
     def __init__(self):
         pass
 
-    def learn(self,x,y):
+    def train(self,x,y):
         matX = syori.standardization(np.array(x))
         theta = np.linalg.inv(np.dot(matX.T,matX))
         theta = np.dot(np.dot(theta,matX.T),np.array(y))

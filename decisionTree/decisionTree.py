@@ -6,7 +6,7 @@ class DecisionTree(object):
         self.minsize = max(2,minsize)
 
     """学習する"""
-    def learn(self,data,label):
+    def train(self,data,label):
         self.data = np.array(data)
         self.label = np.array(label)
         self.categorys = np.unique(self.label)

@@ -6,11 +6,11 @@ class logistic:
         pass
 
     # 使う時に呼び出す学習をする関数
-    def learn(self,x,y,alpha = 1,Epsilon = 0.001):
+    def train(self,x,y,alpha = 1,Epsilon = 0.001):
         self.alpha = alpha
         self.Epcilon = Epsilon
         self.paramInit(np.array(x),np.array(y))
-        self.train()
+        self.optimize()
     
     # 使う時に呼び出す予測関数
     def predict(self,x):
@@ -25,7 +25,7 @@ class logistic:
         return ans
 
     # 再急降下法を行って重みを最適化
-    def train(self):
+    def optimize(self):
         lossb = 10**9
         while True:
             dw,db = self.lossDiff()
