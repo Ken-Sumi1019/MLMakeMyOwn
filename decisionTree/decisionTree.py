@@ -44,13 +44,11 @@ class DecisionTree(object):
 
     """予測値を決定"""
     def decisionVal(self,indexes):
-        val,count = np.unique(self.label[indexes],return_counts=True)
-        return val[np.argmax(count)]
+        return 0
 
-    """ジニ不純度を計算する"""
+    """分類する基準の値を求める"""
     def lossScore(self,index):
-        n = len(index)
-        return 1.0 - sum([np.count_nonzero(self.label[index] == c) / n for c in self.categorys])
+        return 0
 
     """最良の閾値を見つける"""
     def bestThreshold(self,indexs):
@@ -97,3 +95,24 @@ class DecisionTree(object):
         for i in range(len(x)):
             ans[i] = self.DFS_predict(x[i],self.tree)
         return ans
+
+class ClassificationTree(DecisionTree):
+    """ジニ不純度を計算する"""
+    def lossScore(self,index):
+        n = len(index)
+        return 1.0 - sum([np.count_nonzero(self.label[index] == c) / n for c in self.categorys])
+
+    """予測値を決定"""
+    def decisionVal(self,indexes):
+        val,count = np.unique(self.label[indexes],return_counts=True)
+        return val[np.argmax(count)]
+
+
+class RegressionTree(DecisionTree):
+    """平均二乗誤差を計算"""
+    def lossScore(self,index):
+        return sum((self.label[index] - np.mean(self.label[index])) ** 2) / len(index)
+
+
+    def decisionVal(self,indexes):
+        return np.mean(self.label[indexes])
