@@ -37,4 +37,19 @@ class Classification:
             ans[i] = val[np.argmax(count)]
         return ans
 
-    
+class Regression(Classification):
+
+    def makeTree(self):
+        tree = decisionTree.RegressionTree(self.maxdepth,self.minsize)
+        n = len(self.data)
+        index = np.random.randint(0, n,n )
+        tree.train(self.data[index],
+                   self.label[index])
+        return tree
+
+    def predict(self,x):
+        result = [None]*self.n_trees
+        for i in range(self.n_trees):
+            result[i] = self.forest[i].predict(x)
+        result = np.array(result).T
+        return result.mean(axis = 1)
